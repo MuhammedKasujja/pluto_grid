@@ -25,3 +25,6 @@ export 'pluto_left_frozen_rows.dart';
 export 'pluto_right_frozen_columns.dart';
 export 'pluto_right_frozen_columns_footer.dart';
 export 'pluto_right_frozen_rows.dart';
+
+/// autocomplete cell
+export 'cells/autocomplete/autocomplete.dart';

@@ -295,6 +295,12 @@ mixin CellState implements IPlutoGridState {
           : oldValue;
     }
 
+    if (column.type.isAutocomplete) {
+      return column.type.autocomplete.items.contains(newValue) == true
+          ? newValue
+          : oldValue;
+    }
+
     if (column.type.isDate) {
       try {
         final parseNewValue =

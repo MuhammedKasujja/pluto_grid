@@ -13,6 +13,19 @@ abstract class PlutoColumnType {
     );
   }
 
+  /// Set to autocomplete column.
+  factory PlutoColumnType.autocomplete(
+    List<dynamic> items, {
+    dynamic defaultValue = '',
+    bool enableColumnFilter = false,
+  }) {
+    return PlutoColumnTypeAutocomplete(
+      defaultValue: defaultValue,
+      items: items,
+      enableColumnFilter: enableColumnFilter,
+    );
+  }
+
   /// Set to numeric column.
   ///
   /// [format]
@@ -174,6 +187,8 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
 
   bool get isTime => this is PlutoColumnTypeTime;
 
+  bool get isAutocomplete => this is PlutoColumnTypeAutocomplete;
+
   PlutoColumnTypeText get text {
     if (this is! PlutoColumnTypeText) {
       throw TypeError();
@@ -204,6 +219,14 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
     }
 
     return this as PlutoColumnTypeSelect;
+  }
+
+  PlutoColumnTypeAutocomplete get autocomplete {
+    if (this is! PlutoColumnTypeAutocomplete) {
+      throw TypeError();
+    }
+
+    return this as PlutoColumnTypeAutocomplete;
   }
 
   PlutoColumnTypeDate get date {
@@ -626,4 +649,34 @@ int _compareWithNull(
   }
 
   return resolve();
+}
+
+class PlutoColumnTypeAutocomplete implements PlutoColumnType {
+  @override
+  final dynamic defaultValue;
+
+  final List<dynamic> items;
+
+  final bool enableColumnFilter;
+
+  const PlutoColumnTypeAutocomplete({
+    this.defaultValue,
+    required this.items,
+    required this.enableColumnFilter,
+  });
+
+  @override
+  bool isValid(dynamic value) => items.contains(value) == true;
+
+  @override
+  int compare(dynamic a, dynamic b) {
+    return _compareWithNull(a, b, () {
+      return items.indexOf(a).compareTo(items.indexOf(b));
+    });
+  }
+
+  @override
+  dynamic makeCompareValue(dynamic v) {
+    return v;
+  }
 }
