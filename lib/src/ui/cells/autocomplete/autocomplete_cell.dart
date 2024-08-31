@@ -22,12 +22,12 @@ abstract class AutoCompleteCell extends StatefulWidget {
   });
 }
 
-abstract class AutoCompleteTextFieldProps {
+abstract class AutoCompleteTextFieldProps<E> {
   TextInputType get keyboardType;
 
   List<TextInputFormatter>? get inputFormatters;
 
-  List<dynamic> get items;
+  List<E> get items;
 }
 
 mixin AutoCompleteCellState<T extends AutoCompleteCell> on State<T>
@@ -235,8 +235,7 @@ mixin AutoCompleteCellState<T extends AutoCompleteCell> on State<T>
       focusNode: cellFocus,
       textEditingController: _textController,
       optionsBuilder: (TextEditingValue textEditingValue) {
-        final options =
-            items.map((item) => item.toString()).toList().where((ele) {
+        final options = items.map((item) => item.toString()).where((ele) {
           final filter = textEditingValue.text.toLowerCase();
           final productKey = ele.toLowerCase();
 
@@ -337,7 +336,8 @@ mixin AutoCompleteCellState<T extends AutoCompleteCell> on State<T>
 
   void handleSelected(dynamic value) {
     // print("cell selected $value");
-    widget.stateManager.changeCellValue(widget.cell, value);
+    widget.stateManager.changeCellValue(widget.cell,
+        widget.column.type.autocomplete.displayStringForOption(value));
     widget.stateManager.setKeepFocus(false);
     // cellFocus.unfocus();
 
