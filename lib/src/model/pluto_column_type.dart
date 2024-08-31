@@ -16,6 +16,7 @@ abstract class PlutoColumnType {
   /// Set to autocomplete column.
   factory PlutoColumnType.autocomplete(
     List<dynamic> items, {
+    required String Function(dynamic item) displayStringForOption,
     dynamic defaultValue = '',
     bool enableColumnFilter = false,
   }) {
@@ -23,6 +24,7 @@ abstract class PlutoColumnType {
       defaultValue: defaultValue,
       items: items,
       enableColumnFilter: enableColumnFilter,
+      displayStringForOption: displayStringForOption,
     );
   }
 
@@ -651,18 +653,21 @@ int _compareWithNull(
   return resolve();
 }
 
-class PlutoColumnTypeAutocomplete implements PlutoColumnType {
+class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType {
   @override
   final dynamic defaultValue;
 
-  final List<dynamic> items;
+  final List<T> items;
 
   final bool enableColumnFilter;
+
+  final String Function(dynamic item) displayStringForOption;
 
   const PlutoColumnTypeAutocomplete({
     this.defaultValue,
     required this.items,
     required this.enableColumnFilter,
+    required this.displayStringForOption,
   });
 
   @override

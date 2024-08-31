@@ -245,7 +245,8 @@ mixin AutoCompleteCellState<T extends AutoCompleteCell> on State<T>
 
         return options;
       },
-      displayStringForOption: (item) => item,
+      displayStringForOption:
+          widget.column.type.autocomplete.displayStringForOption,
       onSelected: (ele) {
         handleSelected(ele);
       },

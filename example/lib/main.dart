@@ -54,7 +54,9 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
         'Programmer',
         'Designer',
         'Owner',
-      ]),
+      ], displayStringForOption: (item) {
+        return item.toString();
+      }),
       enableAutoEditing: true,
     ),
     PlutoColumn(
