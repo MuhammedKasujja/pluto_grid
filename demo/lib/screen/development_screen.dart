@@ -1,4 +1,4 @@
-import 'package:faker/faker.dart';
+import 'package:faker/faker.dart' hide Color, Image;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
@@ -43,7 +43,7 @@ class _DevelopmentScreenState extends State<DevelopmentScreen> {
 
   PlutoGridMode _gridMode = PlutoGridMode.normal;
 
-  PlutoGridConfiguration _configuration = PlutoGridConfiguration(
+  PlutoGridConfiguration _configuration =  PlutoGridConfiguration(
     tabKeyAction: PlutoGridTabKeyAction.moveToNextOnEdge,
     // columnHeight: 30.0,
     // columnFilterHeight: 30.0,
@@ -95,9 +95,9 @@ class _DevelopmentScreenState extends State<DevelopmentScreen> {
     ),
     // localeText: const PlutoGridLocaleText.korean(),
     columnFilter: PlutoGridColumnFilterConfig(
-      filters: const [
+      filters: [
         ...FilterHelper.defaultFilters,
-        ClassYouImplemented(),
+        const ClassYouImplemented(),
       ],
       resolveDefaultColumnFilter: (column, resolver) {
         if (column.field == 'column3') {
@@ -130,7 +130,7 @@ class _DevelopmentScreenState extends State<DevelopmentScreen> {
       rows.addAll(DummyData.rowsByColumns(length: 10000, columns: columns));
       rowColorCallback = (PlutoRowColorContext rowColorContext) {
         return rowColorContext.row.cells['column2']?.value == 'green'
-            ? const Color(0xFFE2F6DF)
+            ?  Colors.black12
             : Colors.white;
       };
     }
