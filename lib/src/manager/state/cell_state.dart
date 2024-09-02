@@ -263,6 +263,11 @@ mixin CellState<T> implements IPlutoGridState {
       return false;
     }
 
+    if (cell.column.type.isAutocomplete) {
+      return cell.column.type.autocomplete.convertAndDisplay(newValue) !=
+          cell.column.type.autocomplete.convertAndDisplay(oldValue);
+    }
+
     if (newValue.toString() == oldValue.toString()) {
       return false;
     }

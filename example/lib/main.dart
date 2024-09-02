@@ -69,6 +69,7 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
         return item.name;
       }),
       enableAutoEditing: true,
+      enableEditingMode: true
     ),
     PlutoColumn(
       title: 'Joined',
