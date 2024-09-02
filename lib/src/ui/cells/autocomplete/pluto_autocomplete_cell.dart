@@ -36,6 +36,6 @@ class PlutoAutoCompleteCellState extends State<PlutoAutoCompleteCell>
   @override
   void initState() {
     super.initState();
-    items = widget.column.type.autocomplete.items;
+    items = widget.column.type.autocomplete.options;
   }
 }

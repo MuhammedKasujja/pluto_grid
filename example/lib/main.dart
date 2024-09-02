@@ -57,19 +57,21 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
     PlutoColumn(
       title: 'Role',
       field: 'role',
-      type: PlutoColumnType<Employee>.autocomplete([
-        // 'Programmer',
-        // 'Designer',
-        // 'Owner',
-        Employee('Kato', 45),
-        Employee('Kimera', 30),
-        Employee('Ismail', 90),
-        Employee('Kasagga', 24),
-      ], displayStringForOption: (item) {
-        return item.name;
-      }),
+      type: PlutoColumnType<Employee>.autocomplete(
+          options: [
+            Employee('Kato', 45),
+            Employee('Kimera', 30),
+            Employee('Ismail', 90),
+            Employee('Kasagga', 24),
+          ],
+          itemBuilder: (context, option) {
+            return Text('${option.name} -- ${option.age}');
+          },
+          displayStringForOption: (item) {
+            return item.name;
+          }),
       enableAutoEditing: true,
-      enableEditingMode: true
+      enableEditingMode: true,
     ),
     PlutoColumn(
       title: 'Joined',

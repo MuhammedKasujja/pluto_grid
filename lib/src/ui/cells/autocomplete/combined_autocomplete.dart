@@ -62,7 +62,7 @@ class _CombinedAutocompleteCellState<T extends Object>
   @override
   void initState() {
     super.initState();
-    items = widget.column.type.autocomplete.items as List<T>;
+    items = widget.column.type.autocomplete.options as List<T>;
 
     cellFocus = FocusNode(onKeyEvent: _handleOnKey);
 
@@ -151,7 +151,7 @@ class _CombinedAutocompleteCellState<T extends Object>
     }
 
     widget.stateManager.changeCellValue(widget.cell, selectedOption);
-    
+
     _textController.text = widget.column.formattedValueForDisplayInEditing(
       selectedOption,
     );
@@ -282,8 +282,8 @@ class _CombinedAutocompleteCellState<T extends Object>
               onPressed: () {
                 textEditingController.text = '';
                 setState(() {
-                 selectedOption = null;
-                 handleSelected();
+                  selectedOption = null;
+                  handleSelected();
                 });
               },
             ),
@@ -326,16 +326,18 @@ class _CombinedAutocompleteCellState<T extends Object>
                 padding: const EdgeInsets.all(0),
                 itemBuilder: (BuildContext context, int index) {
                   final entity = options.elementAt(index);
-                  return Container(
-                    color: highlightedIndex == index
-                        ? Colors.blue.shade100
-                        : Colors.transparent,
-                    child: InkWell(
-                      child: Text(displayString(entity)),
-                      onTap: () {
-                        onSelected(entity);
-                      },
-                    ),
+                  return GestureDetector(
+                    onTap: () {
+                      onSelected(entity);
+                    },
+                    child: widget.column.type.autocomplete
+                            .optionBuilder(context, entity as dynamic) ??
+                        Container(
+                          color: highlightedIndex == index
+                              ? Colors.blue.shade100
+                              : Colors.transparent,
+                          child: Text(displayString(entity)),
+                        ),
                   );
                 },
               ),

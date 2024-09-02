@@ -14,15 +14,17 @@ abstract class PlutoColumnType<T> {
   }
 
   /// Set to autocomplete column.
-  factory PlutoColumnType.autocomplete(
-    List<T> items, {
+  factory PlutoColumnType.autocomplete({
+    required List<T> options,
     required String Function(T item) displayStringForOption,
     dynamic defaultValue = '',
     bool enableColumnFilter = false,
+    Widget Function(BuildContext context, T option)? itemBuilder,
   }) {
     return PlutoColumnTypeAutocomplete<T>(
       defaultValue: defaultValue,
-      items: items,
+      itemBuilder: itemBuilder,
+      options: options,
       enableColumnFilter: enableColumnFilter,
       displayStringForOption: displayStringForOption,
     );
@@ -657,26 +659,29 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType<T> {
   @override
   final dynamic defaultValue;
 
-  final List<T> items;
+  final List<T> options;
 
   final bool enableColumnFilter;
+
+  final Widget Function(BuildContext context, T option)? itemBuilder;
 
   final String Function(T item) displayStringForOption;
 
   const PlutoColumnTypeAutocomplete({
     this.defaultValue,
-    required this.items,
+    required this.itemBuilder,
+    required this.options,
     required this.enableColumnFilter,
     required this.displayStringForOption,
   });
 
   @override
-  bool isValid(dynamic value) => items.contains(value) == true;
+  bool isValid(dynamic value) => options.contains(value) == true;
 
   @override
   int compare(dynamic a, dynamic b) {
     return _compareWithNull(a, b, () {
-      return items.indexOf(a).compareTo(items.indexOf(b));
+      return options.indexOf(a).compareTo(options.indexOf(b));
     });
   }
 
@@ -685,9 +690,17 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType<T> {
     return v;
   }
 
+  Widget? optionBuilder(BuildContext context, dynamic item) {
+    if (item == null) return null;
+    if (item is T) {
+      return itemBuilder?.call(context, item);
+    }
+    return null;
+  }
+
   String convertAndDisplay(dynamic item) {
     if (item == null) return '';
-    
+
     if (item is T) {
       return displayStringForOption(item);
     } else {

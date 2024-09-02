@@ -301,7 +301,7 @@ mixin CellState<T> implements IPlutoGridState {
     }
 
     if (column.type.isAutocomplete) {
-      return column.type.autocomplete.items
+      return column.type.autocomplete.options
               .where((element) => column.type.autocomplete
                   .convertAndDisplay(element)
                   .contains(
