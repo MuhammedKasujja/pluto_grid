@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-abstract class PlutoStatefulWidget extends StatefulWidget {
+abstract class PlutoStatefulWidget<T> extends StatefulWidget {
   const PlutoStatefulWidget({super.key});
 }
 

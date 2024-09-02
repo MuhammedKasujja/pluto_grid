@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
-abstract class PlutoColumnType {
+abstract class PlutoColumnType<T> {
   dynamic get defaultValue;
 
   /// Set as a string column.
   factory PlutoColumnType.text({
     dynamic defaultValue = '',
   }) {
-    return PlutoColumnTypeText(
+    return PlutoColumnTypeText<T>(
       defaultValue: defaultValue,
     );
   }
 
   /// Set to autocomplete column.
   factory PlutoColumnType.autocomplete(
-    List<dynamic> items, {
-    required String Function(dynamic item) displayStringForOption,
+    List<T> items, {
+    required String Function(T item) displayStringForOption,
     dynamic defaultValue = '',
     bool enableColumnFilter = false,
   }) {
-    return PlutoColumnTypeAutocomplete(
+    return PlutoColumnTypeAutocomplete<T>(
       defaultValue: defaultValue,
       items: items,
       enableColumnFilter: enableColumnFilter,
@@ -51,7 +51,7 @@ abstract class PlutoColumnType {
     bool allowFirstDot = false,
     String? locale,
   }) {
-    return PlutoColumnTypeNumber(
+    return PlutoColumnTypeNumber<T>(
       defaultValue: defaultValue,
       format: format,
       negative: negative,
@@ -87,7 +87,7 @@ abstract class PlutoColumnType {
     String? symbol,
     int? decimalDigits,
   }) {
-    return PlutoColumnTypeCurrency(
+    return PlutoColumnTypeCurrency<T>(
       defaultValue: defaultValue,
       format: format,
       negative: negative,
@@ -112,7 +112,7 @@ abstract class PlutoColumnType {
     bool enableColumnFilter = false,
     IconData? popupIcon = Icons.arrow_drop_down,
   }) {
-    return PlutoColumnTypeSelect(
+    return PlutoColumnTypeSelect<T>(
       defaultValue: defaultValue,
       items: items,
       enableColumnFilter: enableColumnFilter,
@@ -144,7 +144,7 @@ abstract class PlutoColumnType {
     bool applyFormatOnInit = true,
     IconData? popupIcon = Icons.date_range,
   }) {
-    return PlutoColumnTypeDate(
+    return PlutoColumnTypeDate<T>(
       defaultValue: defaultValue,
       startDate: startDate,
       endDate: endDate,
@@ -163,7 +163,7 @@ abstract class PlutoColumnType {
     dynamic defaultValue = '00:00',
     IconData? popupIcon = Icons.access_time,
   }) {
-    return PlutoColumnTypeTime(
+    return PlutoColumnTypeTime<T>(
       defaultValue: defaultValue,
       popupIcon: popupIcon,
     );
@@ -176,7 +176,7 @@ abstract class PlutoColumnType {
   dynamic makeCompareValue(dynamic v);
 }
 
-extension PlutoColumnTypeExtension on PlutoColumnType {
+extension PlutoColumnTypeExtension<T> on PlutoColumnType<T> {
   bool get isText => this is PlutoColumnTypeText;
 
   bool get isNumber => this is PlutoColumnTypeNumber;
@@ -189,7 +189,7 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
 
   bool get isTime => this is PlutoColumnTypeTime;
 
-  bool get isAutocomplete => this is PlutoColumnTypeAutocomplete;
+  bool get isAutocomplete => this is PlutoColumnTypeAutocomplete<T>;
 
   PlutoColumnTypeText get text {
     if (this is! PlutoColumnTypeText) {
@@ -223,12 +223,12 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
     return this as PlutoColumnTypeSelect;
   }
 
-  PlutoColumnTypeAutocomplete get autocomplete {
-    if (this is! PlutoColumnTypeAutocomplete) {
+  PlutoColumnTypeAutocomplete<T> get autocomplete {
+    if (this is! PlutoColumnTypeAutocomplete<T>) {
       throw TypeError();
     }
 
-    return this as PlutoColumnTypeAutocomplete;
+    return this as PlutoColumnTypeAutocomplete<T>;
   }
 
   PlutoColumnTypeDate get date {
@@ -256,7 +256,7 @@ extension PlutoColumnTypeExtension on PlutoColumnType {
       hasFormat ? (this as PlutoColumnTypeHasFormat).applyFormat(value) : value;
 }
 
-class PlutoColumnTypeText implements PlutoColumnType {
+class PlutoColumnTypeText<T> implements PlutoColumnType<T> {
   @override
   final dynamic defaultValue;
 
@@ -280,9 +280,9 @@ class PlutoColumnTypeText implements PlutoColumnType {
   }
 }
 
-class PlutoColumnTypeNumber
+class PlutoColumnTypeNumber<T>
     with PlutoColumnTypeWithNumberFormat
-    implements PlutoColumnType, PlutoColumnTypeHasFormat<String> {
+    implements PlutoColumnType<T>, PlutoColumnTypeHasFormat<String> {
   @override
   final dynamic defaultValue;
 
@@ -324,9 +324,9 @@ class PlutoColumnTypeNumber
   }
 }
 
-class PlutoColumnTypeCurrency
+class PlutoColumnTypeCurrency<T>
     with PlutoColumnTypeWithNumberFormat
-    implements PlutoColumnType, PlutoColumnTypeHasFormat<String?> {
+    implements PlutoColumnType<T>, PlutoColumnTypeHasFormat<String?> {
   @override
   final dynamic defaultValue;
 
@@ -376,8 +376,8 @@ class PlutoColumnTypeCurrency
   late final int decimalPoint;
 }
 
-class PlutoColumnTypeSelect
-    implements PlutoColumnType, PlutoColumnTypeHasPopupIcon {
+class PlutoColumnTypeSelect<T>
+    implements PlutoColumnType<T>, PlutoColumnTypeHasPopupIcon {
   @override
   final dynamic defaultValue;
 
@@ -411,9 +411,9 @@ class PlutoColumnTypeSelect
   }
 }
 
-class PlutoColumnTypeDate
+class PlutoColumnTypeDate<T>
     implements
-        PlutoColumnType,
+        PlutoColumnType<T>,
         PlutoColumnTypeHasFormat<String>,
         PlutoColumnTypeHasDateFormat,
         PlutoColumnTypeHasPopupIcon {
@@ -502,8 +502,8 @@ class PlutoColumnTypeDate
   }
 }
 
-class PlutoColumnTypeTime
-    implements PlutoColumnType, PlutoColumnTypeHasPopupIcon {
+class PlutoColumnTypeTime<T>
+    implements PlutoColumnType<T>, PlutoColumnTypeHasPopupIcon {
   @override
   final dynamic defaultValue;
 
@@ -653,7 +653,7 @@ int _compareWithNull(
   return resolve();
 }
 
-class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType {
+class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType<T> {
   @override
   final dynamic defaultValue;
 
@@ -661,7 +661,7 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType {
 
   final bool enableColumnFilter;
 
-  final String Function(dynamic item) displayStringForOption;
+  final String Function(T item) displayStringForOption;
 
   const PlutoColumnTypeAutocomplete({
     this.defaultValue,
@@ -683,5 +683,20 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType {
   @override
   dynamic makeCompareValue(dynamic v) {
     return v;
+  }
+
+  String convertAndDisplay(dynamic item) {
+    if (item is T) {
+      return displayStringForOption(item);
+    } else {
+      try {
+        T typedItem = item as T;
+        return displayStringForOption(typedItem);
+      } catch (e) {
+        // return 'Error: Cannot convert item to type $T';
+        // return 'Error ${item.runtimeType}';
+        return "";
+      }
+    }
   }
 }

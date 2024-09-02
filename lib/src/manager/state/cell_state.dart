@@ -75,7 +75,7 @@ class _State {
   PlutoGridCellPosition? _currentCellPosition;
 }
 
-mixin CellState implements IPlutoGridState {
+mixin CellState<T> implements IPlutoGridState {
   final _State _state = _State();
 
   @override
@@ -296,11 +296,14 @@ mixin CellState implements IPlutoGridState {
     }
 
     if (column.type.isAutocomplete) {
-      return column.type.autocomplete.items.contains(
-                  column.type.autocomplete.displayStringForOption(newValue)) ==
-              true
-          ? column.type.autocomplete.displayStringForOption(newValue)
-          : column.type.autocomplete.displayStringForOption(oldValue);
+      return column.type.autocomplete.items
+              .where((element) => column.type.autocomplete
+                  .convertAndDisplay(element)
+                  .contains(
+                      column.type.autocomplete.convertAndDisplay(newValue)))
+              .isNotEmpty
+          ? newValue
+          : oldValue;
     }
 
     if (column.type.isDate) {

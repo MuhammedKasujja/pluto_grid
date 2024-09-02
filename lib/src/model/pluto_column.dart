@@ -20,7 +20,7 @@ typedef PlutoColumnCheckReadOnly = bool Function(
   PlutoCell cell,
 );
 
-class PlutoColumn {
+class PlutoColumn<T> {
   /// A title to be displayed on the screen.
   /// If a titleSpan value is set, the title value is not displayed.
   String title;
@@ -32,7 +32,7 @@ class PlutoColumn {
   ///
   /// Text, number, select, date, time, etc.
   /// ex) PlutoColumnType.text(), PlutoColumnType.number() ...
-  PlutoColumnType type;
+  PlutoColumnType<T> type;
 
   bool readOnly;
 
@@ -300,6 +300,10 @@ class PlutoColumn {
       return type.applyFormat(value);
     }
 
+    if (type.isAutocomplete) {
+      return (type as PlutoColumnTypeAutocomplete<T>).convertAndDisplay(value);
+    }
+
     return value.toString();
   }
 
@@ -322,6 +326,10 @@ class PlutoColumn {
           );
     }
 
+    if (type is PlutoColumnTypeAutocomplete<T>) {
+      return (type as PlutoColumnTypeAutocomplete<T>).convertAndDisplay(value);
+    }
+
     if (formatter != null) {
       final bool allowFormatting =
           readOnly || type.isSelect || type.isTime || type.isDate;
@@ -335,8 +343,8 @@ class PlutoColumn {
   }
 }
 
-class PlutoColumnRendererContext {
-  final PlutoColumn column;
+class PlutoColumnRendererContext<T> {
+  final PlutoColumn<T> column;
 
   final int rowIdx;
 
@@ -355,8 +363,8 @@ class PlutoColumnRendererContext {
   });
 }
 
-class PlutoColumnFooterRendererContext {
-  final PlutoColumn column;
+class PlutoColumnFooterRendererContext<T> {
+  final PlutoColumn<T> column;
 
   final PlutoGridStateManager stateManager;
 

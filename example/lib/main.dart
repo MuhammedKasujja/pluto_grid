@@ -20,6 +20,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Employee {
+  final String name;
+  final int age;
+
+  Employee(this.name, this.age);
+}
+
 /// PlutoGrid Example
 //
 /// For more examples, go to the demo web link on the github below.
@@ -50,12 +57,16 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
     PlutoColumn(
       title: 'Role',
       field: 'role',
-      type: PlutoColumnType.autocomplete(<String>[
-        'Programmer',
-        'Designer',
-        'Owner',
+      type: PlutoColumnType<Employee>.autocomplete([
+        // 'Programmer',
+        // 'Designer',
+        // 'Owner',
+        Employee('Kato', 45),
+        Employee('Kimera', 30),
+        Employee('Ismail', 90),
+        Employee('Kasagga', 24),
       ], displayStringForOption: (item) {
-        return item.toString();
+        return item.name;
       }),
       enableAutoEditing: true,
     ),

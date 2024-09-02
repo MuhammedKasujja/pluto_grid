@@ -3,11 +3,11 @@ import 'package:pluto_grid/pluto_grid.dart';
 
 import 'ui.dart';
 
-class PlutoBaseCell extends StatelessWidget
+class PlutoBaseCell<T> extends StatelessWidget
     implements PlutoVisibilityLayoutChild {
   final PlutoCell cell;
 
-  final PlutoColumn column;
+  final PlutoColumn<T> column;
 
   final int rowIdx;
 
@@ -123,7 +123,7 @@ class PlutoBaseCell extends StatelessWidget
         cellPadding: column.cellPadding ??
             stateManager.configuration.style.defaultCellPadding,
         stateManager: stateManager,
-        child: _Cell(
+        child: _Cell<T>(
           stateManager: stateManager,
           rowIdx: rowIdx,
           column: column,
@@ -302,14 +302,14 @@ class _CellContainerState extends PlutoStateWithChange<_CellContainer> {
   }
 }
 
-class _Cell extends PlutoStatefulWidget {
+class _Cell<T> extends PlutoStatefulWidget {
   final PlutoGridStateManager stateManager;
 
   final int rowIdx;
 
   final PlutoRow row;
 
-  final PlutoColumn column;
+  final PlutoColumn<T> column;
 
   final PlutoCell cell;
 
@@ -325,7 +325,7 @@ class _Cell extends PlutoStatefulWidget {
   State<_Cell> createState() => _CellState();
 }
 
-class _CellState extends PlutoStateWithChange<_Cell> {
+class _CellState<T extends Object> extends PlutoStateWithChange<_Cell> {
   bool _showTypedCell = false;
 
   @override
@@ -357,7 +357,7 @@ class _CellState extends PlutoStateWithChange<_Cell> {
           row: widget.row,
         );
       } else if (widget.column.type.isAutocomplete) {
-        return PlutoAutoCompleteCell(
+        return CombinedAutocompleteCell<T>(
           stateManager: stateManager,
           cell: widget.cell,
           column: widget.column,
