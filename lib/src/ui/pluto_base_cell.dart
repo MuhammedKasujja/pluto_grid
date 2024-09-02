@@ -105,6 +105,11 @@ class PlutoBaseCell<T> extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    /// force autocomplete dropdown to match textfield and column width
+    EdgeInsets padding = column.type.isAutocomplete
+        ? const EdgeInsets.all(0)
+        : column.cellPadding ??
+            stateManager.configuration.style.defaultCellPadding;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       // Essential gestures.
@@ -120,8 +125,7 @@ class PlutoBaseCell<T> extends StatelessWidget
         rowIdx: rowIdx,
         row: row,
         column: column,
-        cellPadding: column.cellPadding ??
-            stateManager.configuration.style.defaultCellPadding,
+        cellPadding: padding,
         stateManager: stateManager,
         child: _Cell<T>(
           stateManager: stateManager,
@@ -135,7 +139,7 @@ class PlutoBaseCell<T> extends StatelessWidget
   }
 }
 
-class _CellContainer extends PlutoStatefulWidget {
+class _CellContainer<T> extends PlutoStatefulWidget {
   final PlutoCell cell;
 
   final PlutoRow row;

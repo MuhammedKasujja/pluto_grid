@@ -291,7 +291,7 @@ class _CombinedAutocompleteCellState<T extends Object>
             border: const OutlineInputBorder(
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.zero,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           ),
           // autovalidateMode: AutovalidateMode.onUserInteraction,
           keyboardType: TextInputType.text,
@@ -320,7 +320,7 @@ class _CombinedAutocompleteCellState<T extends Object>
               width: widget.column.width,
               height: 200,
               constraints: const BoxConstraints(maxHeight: 200),
-              child: ListView.builder(
+              child: ListView.separated(
                 itemCount: options.length,
                 shrinkWrap: true,
                 padding: const EdgeInsets.all(0),
@@ -336,10 +336,15 @@ class _CombinedAutocompleteCellState<T extends Object>
                           color: highlightedIndex == index
                               ? Colors.blue.shade100
                               : Colors.transparent,
-                          child: Text(displayString(entity)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(displayString(entity)),
+                          ),
                         ),
                   );
                 },
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(thickness: .3, height: 8,),
               ),
             ),
           ),

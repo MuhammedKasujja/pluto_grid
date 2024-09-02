@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 void main() {
@@ -12,9 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PlutoGrid Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.light(),
       home: const PlutoGridExamplePage(),
     );
   }
@@ -65,7 +64,10 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
             Employee('Kasagga', 24),
           ],
           itemBuilder: (context, option) {
-            return Text('${option.name} -- ${option.age}');
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('${option.name} -- ${option.age}'),
+            );
           },
           displayStringForOption: (item) {
             return item.name;
