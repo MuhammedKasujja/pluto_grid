@@ -282,7 +282,8 @@ class _CombinedAutocompleteCellState<T extends Object>
               onPressed: () {
                 textEditingController.text = '';
                 setState(() {
-                  // _showClear = false;
+                 selectedOption = null;
+                 handleSelected();
                 });
               },
             ),
@@ -346,7 +347,6 @@ class _CombinedAutocompleteCellState<T extends Object>
   }
 
   void handleSelected() {
-    print('selectedOption ${displayString(selectedOption!)}');
     widget.stateManager.changeCellValue(widget.cell, selectedOption);
     widget.stateManager.setKeepFocus(false);
     // cellFocus.unfocus();

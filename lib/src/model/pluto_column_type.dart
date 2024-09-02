@@ -686,6 +686,8 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType<T> {
   }
 
   String convertAndDisplay(dynamic item) {
+    if (item == null) return '';
+    
     if (item is T) {
       return displayStringForOption(item);
     } else {
