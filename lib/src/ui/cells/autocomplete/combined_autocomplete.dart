@@ -243,7 +243,7 @@ class _CombinedAutocompleteCellState<T extends Object>
     }
 
     return RawAutocomplete<T>(
-      key: ValueKey('${widget.cell.column.hashCode}'),
+      key: ValueKey('${widget.cell.hashCode}'),
       focusNode: cellFocus,
       textEditingController: _textController,
       optionsBuilder: (TextEditingValue textEditingValue) {
@@ -264,8 +264,8 @@ class _CombinedAutocompleteCellState<T extends Object>
           TextEditingController textEditingController,
           FocusNode focusNode,
           VoidCallback onFieldSubmitted) {
-        return TextField(
-          key: ValueKey('${widget.cell.column.hashCode}'),
+        return TextFormField(
+          key: ValueKey('${widget.cell.hashCode}'),
           focusNode: focusNode,
           controller: textEditingController,
           readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
@@ -293,14 +293,14 @@ class _CombinedAutocompleteCellState<T extends Object>
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           ),
-          // autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           keyboardType: TextInputType.text,
           expands: false,
           autocorrect: false,
           maxLines: 1,
-          textInputAction: TextInputAction.newline,
+          textInputAction: TextInputAction.done,
           onChanged: _handleOnChanged,
-          onSubmitted: (value) {
+          onFieldSubmitted: (value) {
             onFieldSubmitted();
           },
           enabled: true,
@@ -344,7 +344,10 @@ class _CombinedAutocompleteCellState<T extends Object>
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(thickness: .3, height: 8,),
+                    const Divider(
+                  thickness: .3,
+                  height: 8,
+                ),
               ),
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 void main() {
@@ -62,6 +61,18 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
             Employee('Kimera', 30),
             Employee('Ismail', 90),
             Employee('Kasagga', 24),
+            Employee('Irena', 45),
+            Employee('Molly', 30),
+            Employee('John', 90),
+            Employee('Isaac', 24),
+            Employee('Kisomose', 45),
+            Employee('Nampeera', 30),
+            Employee('Umar', 90),
+            Employee('Kazibwe', 24),
+            Employee('Mustasha', 45),
+            Employee('Jamil', 30),
+            Employee('Kitonsa', 90),
+            Employee('Muhammed', 24),
           ],
           itemBuilder: (context, option) {
             return Padding(
@@ -74,6 +85,20 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
           }),
       enableAutoEditing: true,
       enableEditingMode: true,
+      renderer: (rendererContext) {
+        return Padding(
+          padding: rendererContext.column.cellPadding ??
+              rendererContext
+                  .stateManager.configuration.style.defaultCellPadding,
+          child: Text(
+            rendererContext.cell.column.type.autocomplete
+                .convertAndDisplay(rendererContext.cell.value),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      },
     ),
     PlutoColumn(
       title: 'Joined',
