@@ -310,7 +310,6 @@ class _CombinedAutocompleteCellState<T extends Object>
       },
       optionsViewBuilder: (BuildContext context,
           AutocompleteOnSelected<T> onSelected, Iterable<T> options) {
-        final highlightedIndex = AutocompleteHighlightedOption.of(context);
         return Align(
           alignment: Alignment.topLeft,
           child: Material(
@@ -323,24 +322,37 @@ class _CombinedAutocompleteCellState<T extends Object>
               child: ListView.separated(
                 itemCount: options.length,
                 shrinkWrap: true,
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 itemBuilder: (BuildContext context, int index) {
-                  final entity = options.elementAt(index);
-                  return GestureDetector(
+                  final T option = options.elementAt(index);
+                  return InkWell(
                     onTap: () {
-                      onSelected(entity);
+                      onSelected(option);
                     },
-                    child: widget.column.type.autocomplete
-                            .optionBuilder(context, entity as dynamic) ??
-                        Container(
-                          color: highlightedIndex == index
-                              ? Colors.blue.shade100
-                              : Colors.transparent,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(displayString(entity)),
-                          ),
-                        ),
+                    child: Builder(
+                      builder: (context) {
+                        final bool highlight =
+                            AutocompleteHighlightedOption.of(context) == index;
+                        // if (highlight) {
+                        //   SchedulerBinding.instance.addPostFrameCallback(
+                        //       (Duration timeStamp) {
+                        //     Scrollable.ensureVisible(context, alignment: 0.5);
+                        //   },
+                        //       debugLabel:
+                        //           'CombinedAutocompleteCellState.ensureVisible');
+                        // }
+                        return Container(
+                          color:
+                              highlight ? Theme.of(context).focusColor : null,
+                          child: widget.column.type.autocomplete
+                                  .optionBuilder(context, option as dynamic) ??
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(displayString(option)),
+                              ),
+                        );
+                      },
+                    ),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) =>
@@ -357,6 +369,8 @@ class _CombinedAutocompleteCellState<T extends Object>
   }
 
   void handleSelected() {
+    print(
+        'selectedOption === ${widget.column.type.autocomplete.convertAndDisplay(selectedOption)}');
     widget.stateManager.changeCellValue(widget.cell, selectedOption);
     widget.stateManager.setKeepFocus(false);
     // cellFocus.unfocus();
