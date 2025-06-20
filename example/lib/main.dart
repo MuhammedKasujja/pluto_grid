@@ -1,3 +1,4 @@
+import 'package:example/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
@@ -6,13 +7,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PlutoGrid Example',
-      theme: ThemeData.light(),
+      theme: AppTheme.light,
       home: const PlutoGridExamplePage(),
     );
   }
@@ -29,7 +30,7 @@ class Employee {
 //
 /// For more examples, go to the demo web link on the github below.
 class PlutoGridExamplePage extends StatefulWidget {
-  const PlutoGridExamplePage({Key? key}) : super(key: key);
+  const PlutoGridExamplePage({super.key});
 
   @override
   State<PlutoGridExamplePage> createState() => _PlutoGridExamplePageState();
@@ -51,6 +52,8 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
       title: 'Age',
       field: 'age',
       type: PlutoColumnType.number(),
+      // work-around for centering column text
+      cellPadding: EdgeInsets.all(10)
     ),
     PlutoColumn(
       title: 'Role',
