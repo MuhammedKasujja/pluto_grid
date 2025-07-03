@@ -38,76 +38,68 @@ class PlutoGridExamplePage extends StatefulWidget {
 
 class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
   final List<PlutoColumn> columns = <PlutoColumn>[
-    PlutoColumn(
-      title: 'Id',
-      field: 'id',
-      type: PlutoColumnType.text(),
-    ),
-    PlutoColumn(
-      title: 'Name',
-      field: 'name',
-      type: PlutoColumnType.text(),
-    ),
+    PlutoColumn(title: 'Id', field: 'id', type: PlutoColumnType.text()),
+    PlutoColumn(title: 'Name', field: 'name', type: PlutoColumnType.text()),
     PlutoColumn(
       title: 'Age',
       field: 'age',
       type: PlutoColumnType.number(),
       // work-around for centering column text
-      cellPadding: EdgeInsets.all(10)
+      cellPadding: EdgeInsets.all(10),
     ),
     PlutoColumn(
       title: 'Role',
       field: 'role',
       type: PlutoColumnType<Employee>.autocomplete(
-          options: [
-            Employee('Kato', 45),
-            Employee('Kimera', 30),
-            Employee('Ismail', 90),
-            Employee('Kasagga', 24),
-            Employee('Irena', 45),
-            Employee('Molly', 30),
-            Employee('John', 90),
-            Employee('Isaac', 24),
-            Employee('Kisomose', 45),
-            Employee('Nampeera', 30),
-            Employee('Umar', 90),
-            Employee('Kazibwe', 24),
-            Employee('Mustasha', 45),
-            Employee('Jamil', 30),
-            Employee('Kitonsa', 90),
-            Employee('Muhammed', 24),
-          ],
-          itemBuilder: (context, option) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('${option.name} -- ${option.age}'),
-            );
-          },
-          displayStringForOption: (item) {
-            return item.name;
-          }),
+        options: [
+          Employee('Kato', 45),
+          Employee('Kimera', 30),
+          Employee('Ismail', 90),
+          Employee('Kasagga', 24),
+          Employee('Irena', 45),
+          Employee('Molly', 30),
+          Employee('John', 90),
+          Employee('Isaac', 24),
+          Employee('Kisomose', 45),
+          Employee('Nampeera', 30),
+          Employee('Umar', 90),
+          Employee('Kazibwe', 24),
+          Employee('Mustasha', 45),
+          Employee('Jamil', 30),
+          Employee('Kitonsa', 90),
+          Employee('Muhammed', 24),
+        ],
+        itemBuilder: (context, option) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('${option.name} -- ${option.age}'),
+          );
+        },
+        displayStringForOption: (item) {
+          return item.name;
+        },
+      ),
       enableAutoEditing: true,
       enableEditingMode: true,
       renderer: (rendererContext) {
         return Padding(
-          padding: rendererContext.column.cellPadding ??
+          padding:
+              rendererContext.column.cellPadding ??
               rendererContext
-                  .stateManager.configuration.style.defaultCellPadding,
+                  .stateManager
+                  .configuration
+                  .style
+                  .defaultCellPadding,
           child: Text(
-            rendererContext.cell.column.type.autocomplete
-                .convertAndDisplay(rendererContext.cell.value),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+            rendererContext.cell.column.type.autocomplete.convertAndDisplay(
+              rendererContext.cell.value,
             ),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         );
       },
     ),
-    PlutoColumn(
-      title: 'Joined',
-      field: 'joined',
-      type: PlutoColumnType.date(),
-    ),
+    PlutoColumn(title: 'Joined', field: 'joined', type: PlutoColumnType.date()),
     PlutoColumn(
       title: 'Working time',
       field: 'working_time',
@@ -145,7 +137,7 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
       cells: {
         'id': PlutoCell(value: 'user ${i + 1}'),
         'name': PlutoCell(value: 'Mike'),
-        'age': PlutoCell(value: 20),
+        'age': PlutoCell(value: 20 + i),
         'role': PlutoCell(value: ''),
         'joined': PlutoCell(value: '2021-01-01'),
         'working_time': PlutoCell(value: '09:00'),
@@ -158,10 +150,13 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
   final List<PlutoColumnGroup> columnGroups = [
     PlutoColumnGroup(title: 'Id', fields: ['id'], expandedColumn: true),
     PlutoColumnGroup(title: 'User information', fields: ['name', 'age']),
-    PlutoColumnGroup(title: 'Status', children: [
-      PlutoColumnGroup(title: 'A', fields: ['role'], expandedColumn: true),
-      PlutoColumnGroup(title: 'Etc.', fields: ['joined', 'working_time']),
-    ]),
+    PlutoColumnGroup(
+      title: 'Status',
+      children: [
+        PlutoColumnGroup(title: 'A', fields: ['role'], expandedColumn: true),
+        PlutoColumnGroup(title: 'Etc.', fields: ['joined', 'working_time']),
+      ],
+    ),
   ];
 
   /// [PlutoGridStateManager] has many methods and properties to dynamically manipulate the grid.
