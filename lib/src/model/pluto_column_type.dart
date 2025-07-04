@@ -794,6 +794,18 @@ class ComboboxValue {
     );
   }
 
+  ComboboxValue coypWith({
+    String? left,
+    dynamic right,
+    String? label,
+  }) {
+    return ComboboxValue(
+      left: left ?? this.left,
+      right: right ?? this.right,
+      label: label ?? this.label,
+    );
+  }
+
   @override
   String toString() {
     return toString().toString();
