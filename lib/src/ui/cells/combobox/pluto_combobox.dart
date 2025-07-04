@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +8,7 @@ import 'package:pluto_grid/src/helper/platform_helper.dart';
 
 import 'combobox_cell.dart';
 
-class CombinedComboboxCell<T extends Object> extends StatefulWidget {
+class PlutoComboboxCell<T extends Object> extends StatefulWidget {
   final PlutoGridStateManager stateManager;
 
   final PlutoCell cell;
@@ -15,7 +17,7 @@ class CombinedComboboxCell<T extends Object> extends StatefulWidget {
 
   final PlutoRow row;
 
-  const CombinedComboboxCell({
+  const PlutoComboboxCell({
     required this.stateManager,
     required this.cell,
     required this.column,
@@ -24,12 +26,11 @@ class CombinedComboboxCell<T extends Object> extends StatefulWidget {
   });
 
   @override
-  State<CombinedComboboxCell<T>> createState() => _CombinedComboboxCellState();
+  State<PlutoComboboxCell<T>> createState() => _PlutoComboboxCellState();
 }
 
-class _CombinedComboboxCellState<T extends Object>
-    extends State<CombinedComboboxCell<T>>
-    implements ComboboxTextFieldProps<T> {
+class _PlutoComboboxCellState<T extends Object>
+    extends State<PlutoComboboxCell<T>> implements ComboboxTextFieldProps<T> {
   dynamic _initialCellValue;
 
   final _textController = TextEditingController();
@@ -55,13 +56,13 @@ class _CombinedComboboxCellState<T extends Object>
       widget.column.formattedValueForDisplayInEditing(widget.cell.value);
 
   String displayString(T item) {
-    return widget.column.type.autocomplete.convertAndDisplay(item as dynamic);
+    return widget.column.type.combobox.convertAndDisplay(item as dynamic);
   }
 
   @override
   void initState() {
     super.initState();
-    items = widget.column.type.autocomplete.options as List<T>;
+    items = widget.column.type.combobox.options as List<T>;
 
     cellFocus = FocusNode(onKeyEvent: _handleOnKey);
 
@@ -240,136 +241,56 @@ class _CombinedComboboxCellState<T extends Object>
     if (widget.stateManager.keepFocus) {
       cellFocus.requestFocus();
     }
+    log('Rendered value');
 
-    return RawAutocomplete<T>(
-      key: ValueKey('${widget.cell.hashCode}'),
-      focusNode: cellFocus,
-      textEditingController: _textController,
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        return items.where((option) {
-          return displayString(option)
-              .toLowerCase()
-              .contains(textEditingValue.text.toLowerCase());
-        });
-      },
-      displayStringForOption: displayString,
-      onSelected: (ele) {
-        setState(() {
-          selectedOption = ele;
-          handleSelected();
-        });
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        return TextFormField(
-          key: ValueKey('${widget.cell.hashCode}'),
-          focusNode: focusNode,
-          controller: textEditingController,
-          readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
-          onTap: _handleOnTap,
-          style: widget.stateManager.configuration.style.cellTextStyle,
-          decoration: InputDecoration(
-            labelText: '',
-            hintText: '',
-            suffixIcon: IconButton(
-              icon: const Icon(
-                Icons.clear,
-                size: 15,
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            focusNode: cellFocus,
+            controller: _textController,
+            readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
+            onChanged: _handleOnChanged,
+            onEditingComplete: _handleOnComplete,
+            onSubmitted: (_) => _handleOnComplete(),
+            onTap: _handleOnTap,
+            style: widget.stateManager.configuration.style.cellTextStyle,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
               ),
-              onPressed: () {
-                textEditingController.text = '';
-                setState(() {
-                  selectedOption = null;
-                  handleSelected();
-                });
-              },
+              contentPadding: EdgeInsets.zero,
             ),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            border: const OutlineInputBorder(
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            maxLines: 1,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            textAlignVertical: TextAlignVertical.center,
+            textAlign: widget.column.textAlign.value,
           ),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: TextInputType.text,
-          expands: false,
-          autocorrect: false,
-          maxLines: 1,
-          textInputAction: TextInputAction.done,
-          onChanged: _handleOnChanged,
-          onFieldSubmitted: (value) {
-            onFieldSubmitted();
-          },
-          enabled: true,
-          textAlignVertical: TextAlignVertical.center,
-          textAlign: widget.column.textAlign.value,
-        );
-      },
-      optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<T> onSelected, Iterable<T> options) {
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Material(
-            elevation: 4,
-            child: Container(
-              color: Theme.of(context).cardColor,
-              width: widget.column.width,
-              height: 200,
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: ListView.separated(
-                itemCount: options.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemBuilder: (BuildContext context, int index) {
-                  final T option = options.elementAt(index);
-                  return InkWell(
-                    onTap: () {
-                      onSelected(option);
-                    },
-                    child: Builder(
-                      builder: (context) {
-                        final bool highlight =
-                            AutocompleteHighlightedOption.of(context) == index;
-                        // if (highlight) {
-                        //   SchedulerBinding.instance.addPostFrameCallback(
-                        //       (Duration timeStamp) {
-                        //     Scrollable.ensureVisible(context, alignment: 0.5);
-                        //   },
-                        //       debugLabel:
-                        //           'CombinedAutocompleteCellState.ensureVisible');
-                        // }
-                        return Container(
-                          color:
-                              highlight ? Theme.of(context).focusColor : null,
-                          child: widget.column.type.autocomplete
-                                  .optionBuilder(context, option as dynamic) ??
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(displayString(option)),
-                              ),
-                        );
-                      },
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(
-                  thickness: .3,
-                  height: 8,
+        ),
+        DropdownMenu(
+          enableSearch: false,
+          inputDecorationTheme: InputDecorationTheme(
+            contentPadding: EdgeInsets.all(0),
+            isDense: true,
+          ),
+          width: 110,
+          dropdownMenuEntries: (items as List<ComboboxOption>)
+              .map(
+                (opt) => DropdownMenuEntry(
+                  value: opt.value,
+                  label: opt.label,
                 ),
-              ),
-            ),
-          ),
-        );
-      },
+              )
+              .toList(),
+        ),
+      ],
     );
   }
 
   void handleSelected() {
     print(
-        'selectedOption === ${widget.column.type.autocomplete.convertAndDisplay(selectedOption)}');
+        'selectedOption === ${widget.column.type.combobox.convertAndDisplay(selectedOption)}');
     widget.stateManager.changeCellValue(widget.cell, selectedOption);
     widget.stateManager.setKeepFocus(false);
     // cellFocus.unfocus();

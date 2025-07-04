@@ -367,6 +367,13 @@ class _CellState<T extends Object> extends PlutoStateWithChange<_Cell> {
           column: widget.column,
           row: widget.row,
         );
+      } else if (widget.column.type.isCombobox) {
+        return PlutoComboboxCell<T>(
+          stateManager: stateManager,
+          cell: widget.cell,
+          column: widget.column,
+          row: widget.row,
+        );
       } else if (widget.column.type.isNumber) {
         return PlutoNumberCell(
           stateManager: stateManager,

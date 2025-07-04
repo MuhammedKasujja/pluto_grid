@@ -3,7 +3,7 @@ import 'package:pluto_grid/pluto_grid.dart';
 
 import 'combobox_cell.dart';
 
-class PlutoComboboxCell extends StatefulWidget implements ComboboxCell {
+class PlutoComboboxWidgetCell extends StatefulWidget implements ComboboxCell {
   @override
   final PlutoGridStateManager stateManager;
 
@@ -16,7 +16,7 @@ class PlutoComboboxCell extends StatefulWidget implements ComboboxCell {
   @override
   final PlutoRow row;
 
-  const PlutoComboboxCell({
+  const PlutoComboboxWidgetCell({
     required this.stateManager,
     required this.cell,
     required this.column,
@@ -25,17 +25,17 @@ class PlutoComboboxCell extends StatefulWidget implements ComboboxCell {
   });
 
   @override
-  PlutoComboboxCellState createState() => PlutoComboboxCellState();
+  PlutoComboboxWidgetCellState createState() => PlutoComboboxWidgetCellState();
 }
 
-class PlutoComboboxCellState extends State<PlutoComboboxCell>
-    with ComboboxCellState<PlutoComboboxCell> {
+class PlutoComboboxWidgetCellState extends State<PlutoComboboxWidgetCell>
+    with ComboboxCellState<PlutoComboboxWidgetCell> {
   @override
   List<dynamic> items = [];
 
   @override
   void initState() {
     super.initState();
-    items = widget.column.type.autocomplete.options;
+    items = widget.column.type.combobox.options as List<ComboboxOption>;
   }
 }

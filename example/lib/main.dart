@@ -48,6 +48,20 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
       cellPadding: EdgeInsets.all(10),
     ),
     PlutoColumn(
+      title: 'Quantity',
+      field: 'quantity',
+      type: PlutoColumnType<ComboboxOption>.combobox(
+        options: [
+          ComboboxOption(label: 'Quater', value: '1/4'),
+          ComboboxOption(label: 'Half', value: '1/2'),
+          ComboboxOption(label: 'Third', value: '3/4'),
+        ],
+        optionDisplayStr: (val) => val.toString(),
+      ),
+      enableAutoEditing: true,
+      enableEditingMode: true,
+    ),
+    PlutoColumn(
       title: 'Role',
       field: 'role',
       type: PlutoColumnType<Employee>.autocomplete(
@@ -138,6 +152,7 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
         'id': PlutoCell(value: 'user ${i + 1}'),
         'name': PlutoCell(value: 'Mike'),
         'age': PlutoCell(value: 20 + i),
+        'quantity': PlutoCell(value: '1'),
         'role': PlutoCell(value: ''),
         'joined': PlutoCell(value: '2021-01-01'),
         'working_time': PlutoCell(value: '09:00'),

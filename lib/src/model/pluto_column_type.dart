@@ -30,6 +30,23 @@ abstract class PlutoColumnType<T> {
     );
   }
 
+  /// Set to combobox column.
+  factory PlutoColumnType.combobox({
+    required List<T> options,
+    required String Function(T item) optionDisplayStr,
+    dynamic defaultValue = '',
+    bool enableColumnFilter = false,
+    Widget Function(BuildContext context, T option)? itemBuilder,
+  }) {
+    return PlutoColumnTypeCombobox<T>(
+      defaultValue: defaultValue,
+      itemBuilder: itemBuilder,
+      options: options,
+      enableColumnFilter: enableColumnFilter,
+      optionDisplayStr: optionDisplayStr,
+    );
+  }
+
   /// Set to numeric column.
   ///
   /// [format]
@@ -193,6 +210,8 @@ extension PlutoColumnTypeExtension<T> on PlutoColumnType<T> {
 
   bool get isAutocomplete => this is PlutoColumnTypeAutocomplete<T>;
 
+  bool get isCombobox => this is PlutoColumnTypeCombobox<T>;
+
   PlutoColumnTypeText get text {
     if (this is! PlutoColumnTypeText) {
       throw TypeError();
@@ -231,6 +250,14 @@ extension PlutoColumnTypeExtension<T> on PlutoColumnType<T> {
     }
 
     return this as PlutoColumnTypeAutocomplete<T>;
+  }
+
+  PlutoColumnTypeCombobox<T> get combobox {
+    if (this is! PlutoColumnTypeCombobox<T>) {
+      throw TypeError();
+    }
+
+    return this as PlutoColumnTypeCombobox<T>;
   }
 
   PlutoColumnTypeDate get date {
@@ -707,6 +734,80 @@ class PlutoColumnTypeAutocomplete<T> implements PlutoColumnType<T> {
       try {
         T typedItem = item as T;
         return displayStringForOption(typedItem);
+      } catch (e) {
+        // return 'Error: Cannot convert item to type $T';
+        // return 'Error ${item.runtimeType}';
+        return "";
+      }
+    }
+  }
+}
+
+class ComboboxOption {
+  final String label;
+  final dynamic value;
+
+  ComboboxOption({required this.label, required this.value});
+
+  Map<String, dynamic> toJson() {
+    return {"label": label, "value": value};
+  }
+}
+
+class PlutoColumnTypeCombobox<ComboboxOption>
+    implements PlutoColumnType<ComboboxOption> {
+  @override
+  final dynamic defaultValue;
+
+  final List<ComboboxOption> options;
+
+  final bool enableColumnFilter;
+
+  final Widget Function(BuildContext context, ComboboxOption option)?
+      itemBuilder;
+
+  final String Function(ComboboxOption item) optionDisplayStr;
+
+  const PlutoColumnTypeCombobox({
+    this.defaultValue,
+    required this.itemBuilder,
+    required this.options,
+    required this.enableColumnFilter,
+    required this.optionDisplayStr,
+  });
+
+  @override
+  bool isValid(dynamic value) => options.contains(value) == true;
+
+  @override
+  int compare(dynamic a, dynamic b) {
+    return _compareWithNull(a, b, () {
+      return options.indexOf(a).compareTo(options.indexOf(b));
+    });
+  }
+
+  @override
+  dynamic makeCompareValue(dynamic v) {
+    return v;
+  }
+
+  Widget? optionBuilder(BuildContext context, dynamic item) {
+    if (item == null) return null;
+    if (item is ComboboxOption) {
+      return itemBuilder?.call(context, item);
+    }
+    return null;
+  }
+
+  String convertAndDisplay(dynamic item) {
+    if (item == null) return '';
+
+    if (item is ComboboxOption) {
+      return optionDisplayStr(item);
+    } else {
+      try {
+        ComboboxOption typedItem = item as ComboboxOption;
+        return optionDisplayStr(typedItem);
       } catch (e) {
         // return 'Error: Cannot convert item to type $T';
         // return 'Error ${item.runtimeType}';

@@ -28,3 +28,4 @@ export 'pluto_right_frozen_rows.dart';
 
 /// autocomplete cell
 export 'cells/autocomplete/autocomplete.dart';
+export 'cells/combobox/combobox.dart';

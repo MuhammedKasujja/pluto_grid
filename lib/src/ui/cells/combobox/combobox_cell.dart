@@ -22,12 +22,12 @@ abstract class ComboboxCell extends StatefulWidget {
   });
 }
 
-abstract class ComboboxTextFieldProps<E> {
+abstract class ComboboxTextFieldProps<T> {
   TextInputType get keyboardType;
 
   List<TextInputFormatter>? get inputFormatters;
 
-  List<E> get items;
+  List<T> get items;
 }
 
 mixin ComboboxCellState<T extends ComboboxCell> on State<T>
@@ -219,135 +219,13 @@ mixin ComboboxCellState<T extends ComboboxCell> on State<T>
     return KeyEventResult.handled;
   }
 
-  void _handleOnTap() {
-    widget.stateManager.setKeepFocus(true);
-  }
-
   @override
   Widget build(BuildContext context) {
     // print(items);
     if (widget.stateManager.keepFocus) {
       cellFocus.requestFocus();
     }
-
-    return RawAutocomplete<String>(
-      key: ValueKey('${widget.cell.column.hashCode}'),
-      focusNode: cellFocus,
-      textEditingController: _textController,
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        final options = items.map((item) => item.toString()).where((ele) {
-          final filter = textEditingValue.text.toLowerCase();
-          final productKey = ele.toLowerCase();
-
-          return productKey.contains(filter);
-        }).toList();
-
-        return options;
-      },
-      displayStringForOption:
-          widget.column.type.autocomplete.displayStringForOption,
-      onSelected: (ele) {
-        handleSelected(ele);
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        return TextField(
-          key: ValueKey('${widget.cell.column.hashCode}'),
-          focusNode: focusNode,
-          controller: textEditingController,
-          readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
-          onTap: _handleOnTap,
-          style: widget.stateManager.configuration.style.cellTextStyle,
-          decoration: InputDecoration(
-            labelText: '',
-            hintText: '',
-            suffixIcon: IconButton(
-              icon: const Icon(
-                Icons.clear,
-                size: 15,
-              ),
-              onPressed: () {
-                textEditingController.text = '';
-                setState(() {
-                  // _showClear = false;
-                });
-              },
-            ),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            border: const OutlineInputBorder(
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: EdgeInsets.zero,
-          ),
-          // autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: TextInputType.text,
-          expands: false,
-          autocorrect: false,
-          maxLines: 1,
-          textInputAction: TextInputAction.newline,
-          onChanged: _handleOnChanged,
-          onSubmitted: (value) {
-            onFieldSubmitted();
-          },
-          enabled: true,
-          textAlignVertical: TextAlignVertical.center,
-          textAlign: widget.column.textAlign.value,
-        );
-      },
-      optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
-        final highlightedIndex = AutocompleteHighlightedOption.of(context);
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Material(
-            elevation: 4,
-            child: Container(
-              color: Theme.of(context).cardColor,
-              width: widget.column.width,
-              height: 200,
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: ListView.builder(
-                itemCount: options.length,
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(0),
-                itemBuilder: (BuildContext context, int index) {
-                  final entity = options.elementAt(index);
-                  return Container(
-                    color: highlightedIndex == index
-                        ? Colors.blue.shade100
-                        : Colors.transparent,
-                    child: InkWell(
-                      child: Text(entity),
-                      onTap: () {
-                        onSelected(entity);
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void handleSelected(dynamic value) {
-    // print("cell selected $value");
-    widget.stateManager.changeCellValue(widget.cell,
-        widget.column.type.autocomplete.displayStringForOption(value));
-    widget.stateManager.setKeepFocus(false);
-    // cellFocus.unfocus();
-
-    // _textController.text = widget.column.formattedValueForDisplayInEditing(
-    //   widget.cell.value,
-    // );
-
-    // if (!widget.stateManager.configuration.enableMoveDownAfterSelecting) {
-    //   cellFocus.requestFocus();
-    // }
+    return const SizedBox.shrink();
   }
 }
 
