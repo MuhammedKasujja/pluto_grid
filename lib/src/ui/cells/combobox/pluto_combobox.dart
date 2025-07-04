@@ -121,6 +121,9 @@ class _PlutoComboboxCellState<T extends Object>
   }
 
   ComboboxValue _convertValue(dynamic value) {
+    if (value == null || value == '') {
+      return ComboboxValue.init();
+    }
     final data = jsonDecode(
         widget.column.formattedValueForDisplayInEditing(jsonEncode(value)));
     return ComboboxValue(

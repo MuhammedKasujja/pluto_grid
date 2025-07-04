@@ -172,7 +172,7 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
         'name': PlutoCell(value: 'Mike'),
         'age': PlutoCell(value: 20 + i),
         // 'quantity': PlutoCell(value: '1'),
-        'quantity': PlutoCell(value: {"left": '1', "right": null}),
+        'quantity': PlutoCell(value: null),
         'role': PlutoCell(value: ''),
         'joined': PlutoCell(value: '2021-01-01'),
         'working_time': PlutoCell(value: '09:00'),
