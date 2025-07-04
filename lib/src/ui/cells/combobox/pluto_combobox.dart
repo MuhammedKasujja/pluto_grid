@@ -288,50 +288,53 @@ class _PlutoComboboxCellState<T extends Object>
       cellFocus.requestFocus();
     }
 
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            focusNode: cellFocus,
-            controller: _textController,
-            readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
-            onChanged: _handleOnChanged,
-            onEditingComplete: _handleOnComplete,
-            onSubmitted: (_) => _handleOnComplete(),
-            onTap: _handleOnTap,
-            style: widget.stateManager.configuration.style.cellTextStyle,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: EdgeInsets.zero,
-            ),
-            maxLines: 1,
-            keyboardType: keyboardType,
-            inputFormatters: inputFormatters,
-            textAlignVertical: TextAlignVertical.center,
-            textAlign: widget.column.textAlign.value,
-          ),
-        ),
-        DropdownMenu(
-          initialSelection: selectedOption,
-          enableSearch: false,
-          inputDecorationTheme: const InputDecorationTheme(
-            contentPadding: EdgeInsets.all(0),
-            isDense: true,
-          ),
-          width: 110,
-          dropdownMenuEntries: items
-              .map(
-                (opt) => DropdownMenuEntry(
-                  value: opt.value,
-                  label: opt.label,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              focusNode: cellFocus,
+              controller: _textController,
+              readOnly: widget.column.checkReadOnly(widget.row, widget.cell),
+              onChanged: _handleOnChanged,
+              onEditingComplete: _handleOnComplete,
+              onSubmitted: (_) => _handleOnComplete(),
+              onTap: _handleOnTap,
+              style: widget.stateManager.configuration.style.cellTextStyle,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
                 ),
-              )
-              .toList(),
-          onSelected: _onItemSelected,
-        ),
-      ],
+                contentPadding: EdgeInsets.zero,
+              ),
+              maxLines: 1,
+              keyboardType: keyboardType,
+              inputFormatters: inputFormatters,
+              textAlignVertical: TextAlignVertical.center,
+              textAlign: widget.column.textAlign.value,
+            ),
+          ),
+          DropdownMenu(
+            initialSelection: selectedOption,
+            enableSearch: false,
+            inputDecorationTheme: const InputDecorationTheme(
+              contentPadding: EdgeInsets.all(0),
+              isDense: true,
+            ),
+            width: 110,
+            dropdownMenuEntries: items
+                .map(
+                  (opt) => DropdownMenuEntry(
+                    value: opt.value,
+                    label: opt.label,
+                  ),
+                )
+                .toList(),
+            onSelected: _onItemSelected,
+          ),
+        ],
+      ),
     );
   }
 
