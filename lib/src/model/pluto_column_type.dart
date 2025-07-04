@@ -779,6 +779,13 @@ class ComboboxValue {
     );
   }
 
+  factory ComboboxValue.fromString(dynamic str) {
+    if ((str ?? '').isEmpty) {
+      return ComboboxValue.init();
+    }
+    return ComboboxValue.fromJson(jsonDecode(jsonEncode(str)));
+  }
+
   factory ComboboxValue.init() {
     return ComboboxValue(
       left: null,
