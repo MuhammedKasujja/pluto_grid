@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,24 @@ import 'package:pluto_grid/pluto_grid.dart';
 import 'package:pluto_grid/src/helper/platform_helper.dart';
 
 import 'combobox_cell.dart';
+
+class ComboboxValue {
+  final String? left;
+  final dynamic right;
+
+  ComboboxValue({required this.left, required this.right});
+
+  Map<String, dynamic> toJson() {
+    return {"left": left, "right": right};
+  }
+
+  factory ComboboxValue.fromJson(Map<String, dynamic> json) {
+    return ComboboxValue(
+      left: json['left'],
+      right: json['right'],
+    );
+  }
+}
 
 class PlutoComboboxCell<T extends Object> extends StatefulWidget {
   final PlutoGridStateManager stateManager;
@@ -41,7 +60,7 @@ class _PlutoComboboxCellState<T extends Object>
 
   late _CellEditingStatus _cellEditingStatus;
 
-  T? selectedOption;
+  String? selectedOption;
 
   @override
   List<T> items = [];
@@ -52,8 +71,8 @@ class _PlutoComboboxCellState<T extends Object>
   @override
   List<TextInputFormatter>? get inputFormatters => [];
 
-  String get formattedValue =>
-      widget.column.formattedValueForDisplayInEditing(widget.cell.value);
+  ComboboxValue get formattedValue => _convertValue(widget.cell.value);
+  // widget.column.formattedValueForDisplayInEditing(widget.cell.value);
 
   String displayString(T item) {
     return widget.column.type.combobox.convertAndDisplay(item as dynamic);
@@ -68,7 +87,7 @@ class _PlutoComboboxCellState<T extends Object>
 
     widget.stateManager.setTextEditingController(_textController);
 
-    _textController.text = formattedValue;
+    _textController.text = formattedValue.left ?? '';
 
     _initialCellValue = _textController.text;
 
@@ -103,6 +122,27 @@ class _PlutoComboboxCellState<T extends Object>
     super.dispose();
   }
 
+  Map<String, dynamic> _getValue() {
+    return {
+      "left": _textController.value,
+      "right": selectedOption,
+    };
+  }
+
+  ComboboxValue comboboxValue() {
+    return ComboboxValue(
+      left: _textController.text,
+      right: selectedOption,
+    );
+  }
+
+  ComboboxValue _convertValue(dynamic value) {
+    log(value.toString());
+    final data =
+        jsonDecode(widget.column.formattedValueForDisplayInEditing(jsonEncode(value)));
+    return ComboboxValue(left: data['left'], right: data['right']);
+  }
+
   void _restoreText() {
     if (_cellEditingStatus.isNotChanged) {
       return;
@@ -112,7 +152,7 @@ class _PlutoComboboxCellState<T extends Object>
 
     widget.stateManager.changeCellValue(
       widget.stateManager.currentCell!,
-      selectedOption,
+      _getValue(),
       notify: false,
     );
   }
@@ -146,17 +186,18 @@ class _PlutoComboboxCellState<T extends Object>
   }
 
   void _changeValue() {
-    if (formattedValue == _textController.text) {
+    if ((formattedValue.left ?? '') == _textController.text &&
+        formattedValue.left == selectedOption) {
       return;
     }
 
-    widget.stateManager.changeCellValue(widget.cell, selectedOption);
+    final value = comboboxValue();
 
-    _textController.text = widget.column.formattedValueForDisplayInEditing(
-      selectedOption,
-    );
+    widget.stateManager.changeCellValue(widget.cell, value.toJson());
 
-    _textController.text = formattedValue;
+    _textController.text = value.left ?? '';
+
+    _textController.text = formattedValue.left ?? '';
 
     _initialCellValue = _textController.text;
 
@@ -168,7 +209,7 @@ class _PlutoComboboxCellState<T extends Object>
   }
 
   void _handleOnChanged(String value) {
-    _cellEditingStatus = formattedValue != value.toString()
+    _cellEditingStatus = formattedValue.left != value.toString()
         ? _CellEditingStatus.changed
         : _initialCellValue.toString() == value.toString()
             ? _CellEditingStatus.init
@@ -185,6 +226,12 @@ class _PlutoComboboxCellState<T extends Object>
     PlatformHelper.onMobile(() {
       widget.stateManager.setKeepFocus(false);
       FocusScope.of(context).requestFocus(FocusNode());
+    });
+  }
+
+  void _onItemSelected(option) {
+    setState(() {
+      selectedOption = option;
     });
   }
 
@@ -269,6 +316,7 @@ class _PlutoComboboxCellState<T extends Object>
           ),
         ),
         DropdownMenu(
+          initialSelection: selectedOption,
           enableSearch: false,
           inputDecorationTheme: InputDecorationTheme(
             contentPadding: EdgeInsets.all(0),
@@ -283,6 +331,7 @@ class _PlutoComboboxCellState<T extends Object>
                 ),
               )
               .toList(),
+          onSelected: _onItemSelected,
         ),
       ],
     );

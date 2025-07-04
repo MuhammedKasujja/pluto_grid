@@ -330,6 +330,10 @@ class PlutoColumn<T> {
       return (type as PlutoColumnTypeAutocomplete<T>).convertAndDisplay(value);
     }
 
+    // if (type is PlutoColumnTypeCombobox<T>) {
+    //   return (type as PlutoColumnTypeCombobox<T>).convertAndDisplay(value);
+    // }
+
     if (formatter != null) {
       final bool allowFormatting =
           readOnly || type.isSelect || type.isTime || type.isDate;
