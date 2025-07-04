@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -754,6 +756,47 @@ class ComboboxOption {
   }
 }
 
+class ComboboxValue {
+  final String? left;
+  final dynamic right;
+  final String? label;
+
+  ComboboxValue({
+    required this.left,
+    required this.right,
+    required this.label,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {"left": left, "right": right, "label": label};
+  }
+
+  factory ComboboxValue.fromJson(Map<String, dynamic> json) {
+    return ComboboxValue(
+      left: json['left'],
+      right: json['right'],
+      label: json['label'],
+    );
+  }
+
+  factory ComboboxValue.init() {
+    return ComboboxValue(
+      left: null,
+      right: null,
+      label: null,
+    );
+  }
+
+  @override
+  String toString() {
+    return toString().toString();
+  }
+
+  bool get hasLabel => (label ?? '').isNotEmpty;
+
+  bool get hasValue => (left ?? '').isNotEmpty;
+}
+
 class PlutoColumnTypeCombobox<ComboboxOption>
     implements PlutoColumnType<ComboboxOption> {
   @override
@@ -799,20 +842,14 @@ class PlutoColumnTypeCombobox<ComboboxOption>
     return null;
   }
 
-  String convertAndDisplay(dynamic item) {
-    if (item == null) return '';
+  ComboboxValue convertAndDisplay(dynamic item) {
+    if (item == null) return ComboboxValue.init();
 
-    if (item is ComboboxOption) {
-      return optionDisplayStr(item);
-    } else {
-      try {
-        ComboboxOption typedItem = item as ComboboxOption;
-        return optionDisplayStr(typedItem);
-      } catch (e) {
-        // return 'Error: Cannot convert item to type $T';
-        // return 'Error ${item.runtimeType}';
-        return "";
-      }
+    try {
+      final json = jsonDecode(jsonEncode(item));
+      return ComboboxValue.fromJson(json);
+    } catch (e) {
+      return ComboboxValue.init();
     }
   }
 }

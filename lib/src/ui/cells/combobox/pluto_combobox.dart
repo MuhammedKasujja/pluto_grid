@@ -9,35 +9,6 @@ import 'package:pluto_grid/src/helper/platform_helper.dart';
 
 import 'combobox_cell.dart';
 
-class ComboboxValue {
-  final String? left;
-  final dynamic right;
-  final String? label;
-
-  ComboboxValue({
-    required this.left,
-    required this.right,
-    required this.label,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {"left": left, "right": right, "label": label};
-  }
-
-  factory ComboboxValue.fromJson(Map<String, dynamic> json) {
-    return ComboboxValue(
-      left: json['left'],
-      right: json['right'],
-      label: json['label'],
-    );
-  }
-
-  @override
-  String toString() {
-    return toString().toString();
-  }
-}
-
 class PlutoComboboxCell<T extends Object> extends StatefulWidget {
   final PlutoGridStateManager stateManager;
 
@@ -86,8 +57,8 @@ class _PlutoComboboxCellState<T extends Object>
   ComboboxValue get formattedValue => _convertValue(widget.cell.value);
   // widget.column.formattedValueForDisplayInEditing(widget.cell.value);
 
-  String displayString(T item) {
-    return widget.column.type.combobox.convertAndDisplay(item as dynamic);
+  ComboboxValue displayString(dynamic item) {
+    return widget.column.type.combobox.convertAndDisplay(item);
   }
 
   @override

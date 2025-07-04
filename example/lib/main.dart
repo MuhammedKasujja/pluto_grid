@@ -52,14 +52,33 @@ class _PlutoGridExamplePageState extends State<PlutoGridExamplePage> {
       field: 'quantity',
       type: PlutoColumnType<ComboboxOption>.combobox(
         options: [
-          ComboboxOption(label: 'Quater', value: '1/4'),
-          ComboboxOption(label: 'Half', value: '1/2'),
-          ComboboxOption(label: 'Third', value: '3/4'),
+          ComboboxOption(label: 'Quater', value: '0.25'),
+          ComboboxOption(label: 'Half', value: '0.5'),
+          ComboboxOption(label: 'Third', value: '0.75'),
         ],
         optionDisplayStr: (val) => val.toString(),
       ),
       enableAutoEditing: true,
       enableEditingMode: true,
+      renderer: (rendererContext) {
+        final data = rendererContext.cell.column.type.combobox
+            .convertAndDisplay(rendererContext.cell.value);
+        final text =
+            "${data.left ?? ''}${data.hasLabel ? ' and ${data.label}' : ''}";
+        return Padding(
+          padding:
+              rendererContext.column.cellPadding ??
+              rendererContext
+                  .stateManager
+                  .configuration
+                  .style
+                  .defaultCellPadding,
+          child: Text(
+            text,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+      },
     ),
     PlutoColumn(
       title: 'Role',
