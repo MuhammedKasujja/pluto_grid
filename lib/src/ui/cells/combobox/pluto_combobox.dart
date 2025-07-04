@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,22 +12,28 @@ import 'combobox_cell.dart';
 class ComboboxValue {
   final String? left;
   final dynamic right;
+  final String? label;
 
-  ComboboxValue({required this.left, required this.right});
+  ComboboxValue({
+    required this.left,
+    required this.right,
+    required this.label,
+  });
 
   Map<String, dynamic> toJson() {
-    return {"left": left, "right": right};
+    return {"left": left, "right": right, "label": label};
   }
 
   factory ComboboxValue.fromJson(Map<String, dynamic> json) {
     return ComboboxValue(
       left: json['left'],
       right: json['right'],
+      label: json['label'],
     );
   }
 
   @override
-  String toString(){
+  String toString() {
     return toString().toString();
   }
 }
@@ -65,6 +72,7 @@ class _PlutoComboboxCellState<T extends Object>
   late _CellEditingStatus _cellEditingStatus;
 
   String? selectedOption;
+  String? selectedOptionLabel;
 
   @override
   List<T> items = [];
@@ -94,6 +102,8 @@ class _PlutoComboboxCellState<T extends Object>
     _textController.text = formattedValue.left ?? '';
 
     selectedOption = formattedValue.right;
+
+    selectedOptionLabel = formattedValue.label;
 
     _initialCellValue = formattedValue.toJson();
 
@@ -128,24 +138,22 @@ class _PlutoComboboxCellState<T extends Object>
     super.dispose();
   }
 
-  Map<String, dynamic> _getValue() {
-    return {
-      "left": _textController.value,
-      "right": selectedOption,
-    };
-  }
-
   ComboboxValue comboboxValue() {
     return ComboboxValue(
       left: _textController.text,
       right: selectedOption,
+      label: selectedOptionLabel,
     );
   }
 
   ComboboxValue _convertValue(dynamic value) {
     final data = jsonDecode(
         widget.column.formattedValueForDisplayInEditing(jsonEncode(value)));
-    return ComboboxValue(left: data['left'], right: data['right']);
+    return ComboboxValue(
+      left: data['left'],
+      right: data['right'],
+      label: data['label'],
+    );
   }
 
   void _restoreText() {
@@ -157,7 +165,7 @@ class _PlutoComboboxCellState<T extends Object>
 
     widget.stateManager.changeCellValue(
       widget.stateManager.currentCell!,
-      _getValue(),
+      comboboxValue().toJson(),
       notify: false,
     );
   }
@@ -245,6 +253,9 @@ class _PlutoComboboxCellState<T extends Object>
   void _onItemSelected(option) {
     setState(() {
       selectedOption = option;
+      selectedOptionLabel = (items as List<ComboboxOption>)
+          .firstWhereOrNull((opt) => opt.value.toString() == option.toString())
+          ?.label;
     });
     _changeValue();
   }
