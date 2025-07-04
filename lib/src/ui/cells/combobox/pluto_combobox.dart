@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +23,11 @@ class ComboboxValue {
       left: json['left'],
       right: json['right'],
     );
+  }
+
+  @override
+  String toString(){
+    return toString().toString();
   }
 }
 
@@ -89,7 +93,9 @@ class _PlutoComboboxCellState<T extends Object>
 
     _textController.text = formattedValue.left ?? '';
 
-    _initialCellValue = _textController.text;
+    selectedOption = formattedValue.right;
+
+    _initialCellValue = formattedValue.toJson();
 
     _cellEditingStatus = _CellEditingStatus.init;
 
@@ -137,9 +143,8 @@ class _PlutoComboboxCellState<T extends Object>
   }
 
   ComboboxValue _convertValue(dynamic value) {
-    log(value.toString());
-    final data =
-        jsonDecode(widget.column.formattedValueForDisplayInEditing(jsonEncode(value)));
+    final data = jsonDecode(
+        widget.column.formattedValueForDisplayInEditing(jsonEncode(value)));
     return ComboboxValue(left: data['left'], right: data['right']);
   }
 
@@ -197,9 +202,17 @@ class _PlutoComboboxCellState<T extends Object>
 
     _textController.text = value.left ?? '';
 
+    setState(() {
+      selectedOption = value.right;
+    });
+
     _textController.text = formattedValue.left ?? '';
 
-    _initialCellValue = _textController.text;
+    setState(() {
+      selectedOption = formattedValue.right;
+    });
+
+    _initialCellValue = formattedValue.toJson();
 
     _textController.selection = TextSelection.fromPosition(
       TextPosition(offset: _textController.text.length),
@@ -233,6 +246,7 @@ class _PlutoComboboxCellState<T extends Object>
     setState(() {
       selectedOption = option;
     });
+    _changeValue();
   }
 
   KeyEventResult _handleOnKey(FocusNode node, KeyEvent event) {
@@ -288,7 +302,6 @@ class _PlutoComboboxCellState<T extends Object>
     if (widget.stateManager.keepFocus) {
       cellFocus.requestFocus();
     }
-    log('Rendered value');
 
     return Row(
       children: [
