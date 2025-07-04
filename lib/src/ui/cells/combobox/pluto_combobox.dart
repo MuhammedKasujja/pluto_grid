@@ -46,7 +46,7 @@ class _PlutoComboboxCellState<T extends Object>
   String? selectedOptionLabel;
 
   @override
-  List<T> items = [];
+  List<ComboboxOption> items = [];
 
   @override
   TextInputType get keyboardType => TextInputType.text;
@@ -64,7 +64,10 @@ class _PlutoComboboxCellState<T extends Object>
   @override
   void initState() {
     super.initState();
-    items = widget.column.type.combobox.options as List<T>;
+    items = [
+      ComboboxOption(label: '', value: null),
+      ...widget.column.type.combobox.options as List<ComboboxOption>
+    ];
 
     cellFocus = FocusNode(onKeyEvent: _handleOnKey);
 
@@ -224,7 +227,7 @@ class _PlutoComboboxCellState<T extends Object>
   void _onItemSelected(option) {
     setState(() {
       selectedOption = option;
-      selectedOptionLabel = (items as List<ComboboxOption>)
+      selectedOptionLabel = (items)
           .firstWhereOrNull((opt) => opt.value.toString() == option.toString())
           ?.label;
     });
@@ -313,12 +316,12 @@ class _PlutoComboboxCellState<T extends Object>
         DropdownMenu(
           initialSelection: selectedOption,
           enableSearch: false,
-          inputDecorationTheme: InputDecorationTheme(
+          inputDecorationTheme: const InputDecorationTheme(
             contentPadding: EdgeInsets.all(0),
             isDense: true,
           ),
           width: 110,
-          dropdownMenuEntries: (items as List<ComboboxOption>)
+          dropdownMenuEntries: items
               .map(
                 (opt) => DropdownMenuEntry(
                   value: opt.value,

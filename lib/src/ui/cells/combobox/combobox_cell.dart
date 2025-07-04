@@ -27,7 +27,7 @@ abstract class ComboboxTextFieldProps<T> {
 
   List<TextInputFormatter>? get inputFormatters;
 
-  List<T> get items;
+  List<ComboboxOption> get items;
 }
 
 mixin ComboboxCellState<T extends ComboboxCell> on State<T>

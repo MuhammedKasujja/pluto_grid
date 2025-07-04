@@ -31,7 +31,7 @@ class PlutoComboboxWidgetCell extends StatefulWidget implements ComboboxCell {
 class PlutoComboboxWidgetCellState extends State<PlutoComboboxWidgetCell>
     with ComboboxCellState<PlutoComboboxWidgetCell> {
   @override
-  List<dynamic> items = [];
+  List<ComboboxOption> items = [];
 
   @override
   void initState() {
