@@ -191,15 +191,15 @@ class _PlutoComboboxCellState<T extends Object>
 
     _textController.text = value.left ?? '';
 
-    setState(() {
+    // setState(() {
       selectedOption = value.right;
-    });
+    // });
 
     _textController.text = formattedValue.left ?? '';
 
-    setState(() {
+    // setState(() {
       selectedOption = formattedValue.right;
-    });
+    // });
 
     _initialCellValue = formattedValue.toJson();
 
