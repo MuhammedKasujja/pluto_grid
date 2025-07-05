@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -186,7 +187,7 @@ class _PlutoComboboxCellState<T extends Object>
     }
 
     final value = comboboxValue();
-
+    log('Combobox value changed');
     widget.stateManager.changeCellValue(widget.cell, value.toJson());
 
     _textController.text = value.left ?? '';
