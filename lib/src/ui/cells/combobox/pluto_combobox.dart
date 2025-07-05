@@ -182,7 +182,7 @@ class _PlutoComboboxCellState<T extends Object>
 
   void _changeValue() {
     if ((formattedValue.left ?? '') == _textController.text &&
-        formattedValue.left == selectedOption) {
+        formattedValue.right?.toString() == selectedOption?.toString()) {
       return;
     }
 
