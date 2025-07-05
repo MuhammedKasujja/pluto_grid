@@ -42,7 +42,7 @@ class _PlutoComboboxCellState<T extends Object>
 
   late _CellEditingStatus _cellEditingStatus;
 
-  String? selectedOption;
+  dynamic selectedOption;
   String? selectedOptionLabel;
 
   @override
