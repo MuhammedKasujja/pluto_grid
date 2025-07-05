@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:pluto_grid/src/helper/platform_helper.dart';
+import 'package:pluto_grid/src/ui/cells/decimal_input_formatter.dart';
 
 import 'combobox_cell.dart';
 
@@ -49,10 +50,20 @@ class _PlutoComboboxCellState<T extends Object>
   List<ComboboxOption> items = [];
 
   @override
-  TextInputType get keyboardType => TextInputType.text;
+  TextInputType get keyboardType => const TextInputType.numberWithOptions(
+        decimal: false,
+        signed: false,
+      );
 
   @override
-  List<TextInputFormatter>? get inputFormatters => [];
+  List<TextInputFormatter>? get inputFormatters => [
+        DecimalTextInputFormatter(
+          decimalRange: null,
+          activatedNegativeValues: false,
+          allowFirstDot: false,
+          decimalSeparator: '#,###',
+        ),
+      ];
 
   ComboboxValue get formattedValue => _convertValue(widget.cell.value);
   // widget.column.formattedValueForDisplayInEditing(widget.cell.value);
@@ -75,9 +86,12 @@ class _PlutoComboboxCellState<T extends Object>
 
     _textController.text = formattedValue.left ?? '';
 
-    selectedOption = formattedValue.right;
-
-    selectedOptionLabel = formattedValue.label;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        selectedOption = formattedValue.right;
+        selectedOptionLabel = formattedValue.label;
+      });
+    });
 
     _initialCellValue = formattedValue.toJson();
 
@@ -191,15 +205,15 @@ class _PlutoComboboxCellState<T extends Object>
 
     _textController.text = value.left ?? '';
 
-    setState(() {
-      selectedOption = value.right;
-    });
+    // setState(() {
+    selectedOption = value.right;
+    // });
 
     _textController.text = formattedValue.left ?? '';
 
-    setState(() {
-      selectedOption = formattedValue.right;
-    });
+    // setState(() {
+    selectedOption = formattedValue.right;
+    // });
 
     _initialCellValue = formattedValue.toJson();
 
