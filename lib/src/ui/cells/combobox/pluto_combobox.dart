@@ -72,6 +72,9 @@ class _PlutoComboboxCellState<T extends Object>
     return widget.column.type.combobox.convertAndDisplay(item);
   }
 
+  final FocusNode _disabledFocusNode = FocusNode(skipTraversal: true, canRequestFocus: false);
+
+
   @override
   void initState() {
     super.initState();
@@ -337,10 +340,11 @@ class _PlutoComboboxCellState<T extends Object>
             ),
           ),
           DropdownMenu(
+            focusNode: _disabledFocusNode,
             initialSelection: selectedOption,
             enableSearch: false,
             inputDecorationTheme: const InputDecorationTheme(
-              contentPadding: EdgeInsets.all(0),
+              contentPadding: EdgeInsets.zero,
               isDense: true,
             ),
             width: 110,
