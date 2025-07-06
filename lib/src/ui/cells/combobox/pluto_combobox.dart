@@ -72,8 +72,8 @@ class _PlutoComboboxCellState<T extends Object>
     return widget.column.type.combobox.convertAndDisplay(item);
   }
 
-  final FocusNode _disabledFocusNode = FocusNode(skipTraversal: true, canRequestFocus: false);
-
+  final FocusNode _disabledFocusNode =
+      FocusNode(skipTraversal: true, canRequestFocus: false);
 
   @override
   void initState() {
@@ -313,7 +313,7 @@ class _PlutoComboboxCellState<T extends Object>
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: Row(
         children: [
           Expanded(
@@ -348,6 +348,7 @@ class _PlutoComboboxCellState<T extends Object>
               isDense: true,
             ),
             width: 110,
+            textStyle: Theme.of(context).textTheme.bodyMedium,
             dropdownMenuEntries: items
                 .map(
                   (opt) => DropdownMenuEntry(
@@ -364,9 +365,10 @@ class _PlutoComboboxCellState<T extends Object>
   }
 
   void handleSelected() {
+    final data = comboboxValue().toJson();
     print(
-        'selectedOption === ${widget.column.type.combobox.convertAndDisplay(selectedOption)}');
-    widget.stateManager.changeCellValue(widget.cell, selectedOption);
+        'selectedOption === ${widget.column.type.combobox.convertAndDisplay(data)}');
+    widget.stateManager.changeCellValue(widget.cell, data);
     widget.stateManager.setKeepFocus(false);
     // cellFocus.unfocus();
 
