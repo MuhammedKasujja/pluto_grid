@@ -354,6 +354,14 @@ class _PlutoComboboxCellState<T extends Object>
                   (opt) => DropdownMenuEntry(
                     value: opt.value,
                     label: opt.label,
+                    style: ButtonStyle(
+                      padding: WidgetStateProperty.all<EdgeInsets>(
+                        const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 0.0,
+                        ),
+                      ),
+                    ),
                   ),
                 )
                 .toList(),
